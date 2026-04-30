@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surprise Box - Powered by Nasib</title>
+    <style>
+        :root {
+            --primary-color: #ff4d6d;
+            --bg-color: #fff0f3;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
+        }
+
+        .rules-card {
+            background: white;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            max-width: 280px;
+            font-size: 14px;
+            border: 2px solid var(--primary-color);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 300px;
+        }
+
+        .box {
+            width: 85px;
+            height: 85px;
+            background: var(--primary-color);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #c9184a;
+            color: white;
+            font-size: 30px;
+            transition: all 0.2s;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .box.opened {
+            background: white;
+            color: #333;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 5px;
+            box-shadow: none;
+            border: 2px solid var(--primary-color);
+            transform: scale(0.95);
+        }
+
+        .status-msg {
+            margin-top: 20px;
+            font-weight: bold;
+            color: #ff4d6d;
+            min-height: 24px;
+            text-align: center;
+        }
+
+        .footer {
+            margin-top: 25px;
+            font-size: 11px;
+            color: #888;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="rules-card">
+        <strong>🎁 Surprise Rules</strong><br>
+        Jekono 2 ta box pick koro.<br>
+        No cheating! Screenshot pathao.
+    </div>
+
+    <div class="grid" id="boxGrid"></div>
+
+    <div class="status-msg" id="status"></div>
+
+    <div class="footer">POWERED BY NASIB</div>
+
+    <script>
+        // Protibar I love you Nasib thakbe, baki gulo ei list theke randomly asbe
+        const fixedText = "I love you Nasib";
+        
+        const randomPool = [
+            "Amake ekta treat dao",
+            "Tumi khub e bhalo",
+            "Tumi ekta pacha",
+            "Tumi ekhon e call dao",
+            "Give me 500 Taka",
+            "Tmr ekta secret bolo",
+            "Ekta gan sunao amay",
+            "Tumi amar best friend",
+            "I Hate You Baby",
+            "Ummmah Sona",
+            "Amay ekta kiss dao",
+            "Tumi khub jhogrute",
+            "Tumi onno karoo!",
+            "Ajke amar kotha shunbe",
+            "Tumi amay bhalobasho?",
+            "Ekta selfie pathao",
+            "Tumi ekta gadha",
+            "Ami tomay miss korchi",
+            "Cholo kothao ghure ashi",
+            "Amake treat kobe dibe?",
+            "Tumi amar shob"
+        ];
+
+        // 1. Shuffle the pool
+        randomPool.sort(() => Math.random() - 0.5);
+
+        // 2. Take first 5 from random pool + the fixed one
+        let selectedTexts = [fixedText, ...randomPool.slice(0, 5)];
+
+        // 3. Shuffle those 6 so Nasib's text isn't always in the same box
+        selectedTexts.sort(() => Math.random() - 0.5);
+
+        let openedCount = 0;
+        const grid = document.getElementById('boxGrid');
+
+        for (let i = 0; i < 6; i++) {
+            const box = document.createElement('div');
+            box.className = 'box';
+            box.innerHTML = '🎁';
+            box.onclick = function() {
+                if (openedCount < 2 && !this.classList.contains('opened')) {
+                    this.innerHTML = selectedTexts[i];
+                    this.classList.add('opened');
+                    openedCount++;
+                    
+                    if (openedCount === 2) {
+                        document.getElementById('status').innerText = "DONE! Now take a screenshot 📸";
+                        lockAll();
+                    }
+                }
+            };
+            grid.appendChild(box);
+        }
+
+        function lockAll() {
+            const allBoxes = document.querySelectorAll('.box');
+            allBoxes.forEach(b => {
+                if (!b.classList.contains('opened')) {
+                    b.style.opacity = "0.4";
+                    b.onclick = null;
+                }
+            });
+        }
+    </script>
+</body>
+</html>
